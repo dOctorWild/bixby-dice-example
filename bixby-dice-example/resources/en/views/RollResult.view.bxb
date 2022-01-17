@@ -1,0 +1,28 @@
+result-view {
+   match {
+     RollResultConcept (rollResult) {
+        from-output: RollDice (rollOutput) // Add this match pattern
+     }
+   }
+   // Add the following code in the message key
+   message {
+     // define a condition that changes the dialog depending on whether there
+     // is one or more dice
+     if (rollOutput.numDice == 1) {
+       template ("You've got a ${value(rollResult.roll)}!!!")    
+     }
+     if ((rollOutput.numDice > 1)&& (rollOutput.numDice <= 10)) {
+       choose (Random) {
+         template ("The sum is ${value(rollResult.sum)}")
+         template ("You rolled ${list(rollResult.roll, 'value')}")    
+       }
+     }
+     // check to see if user is inputs more than 10 dice
+     if(rollOutput.numDice > 10) {
+       choose (Random) {
+         template ("Woah! High roller!")
+         template ("${value(rollOutput.numDice)} dice?! You were made for Vegas!")    
+       }
+     }
+   }
+}
